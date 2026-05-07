@@ -223,27 +223,28 @@ export default function Dashboard({ data = [] }) {
              <div className="w-1 h-5 bg-amber-500 rounded-full"></div>
              Top Peminatan Pelatihan
           </h3>
-          <div className="space-y-5">
-            {Object.entries(pelatihanCount)
-              .sort((a,b) => b[1] - a[1])
-              .slice(0, 5)
-              .map(([pelatihan, count]) => (
-              <div key={pelatihan}>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-slate-600 font-medium">{pelatihan}</span>
-                  <span className="font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded text-xs">{count} Peminat</span>
+          <div className="max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+            <div className="space-y-5">
+              {Object.entries(pelatihanCount)
+                .sort((a,b) => b[1] - a[1])
+                .map(([pelatihan, count]) => (
+                <div key={pelatihan}>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-slate-600 font-medium">{pelatihan}</span>
+                    <span className="font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded text-xs">{count} Peminat</span>
+                  </div>
+                  <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                    <div 
+                      className="bg-amber-500 h-full rounded-full transition-all duration-1000" 
+                      style={{ width: `${totalPendaftar > 0 ? (count/totalPendaftar)*100 : 0}%` }}
+                    ></div>
+                  </div>
                 </div>
-                <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
-                  <div 
-                    className="bg-amber-500 h-full rounded-full transition-all duration-1000" 
-                    style={{ width: `${totalPendaftar > 0 ? (count/totalPendaftar)*100 : 0}%` }}
-                  ></div>
-                </div>
-              </div>
-            ))}
-            {Object.keys(pelatihanCount).length === 0 && (
-              <div className="text-center py-8 text-slate-400 italic bg-slate-50 rounded-xl">Belum ada data pendaftar.</div>
-            )}
+              ))}
+              {Object.keys(pelatihanCount).length === 0 && (
+                <div className="text-center py-8 text-slate-400 italic bg-slate-50 rounded-xl">Belum ada data pendaftar.</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
