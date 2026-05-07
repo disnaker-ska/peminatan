@@ -6,12 +6,12 @@ export function Sidebar({ activeTab, onTabClick }) {
     <div className="w-64 bg-slate-900 text-white flex flex-col shadow-xl hidden md:flex z-10">
       <div className="p-6 bg-slate-950 border-b border-slate-800">
         <div className="flex items-center gap-3">
-          <div className="bg-amber-500 p-2 rounded-lg">
-            <Briefcase size={24} className="text-slate-900" />
+          <div className="bg-white p-1 rounded-lg">
+            <img src="/SIPEKAT-Logo.png" alt="Logo" className="w-10 h-10 object-contain" />
           </div>
           <div>
-            <h1 className="font-bold text-lg leading-tight">Disnaker Solo</h1>
-            <p className="text-xs text-slate-400">Peminatan Kerja & Pelatihan</p>
+            <h1 className="font-bold text-xl leading-tight tracking-tight text-white">SIPEKAT</h1>
+            <p className="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Sistem Karir & Pelatihan</p>
           </div>
         </div>
       </div>
@@ -100,11 +100,11 @@ function MobileNavItem({ icon, label, active, onClick }) {
 export function HeaderMobile() {
   return (
     <div className="md:hidden bg-slate-900 text-white p-4 flex items-center gap-3 shadow-md">
-       <div className="bg-amber-500 p-1.5 rounded-lg">
-          <Briefcase size={20} className="text-slate-900" />
+        <div className="bg-white p-1 rounded-lg">
+          <img src="/SIPEKAT-Logo.png" alt="Logo" className="w-8 h-8 object-contain" />
         </div>
         <div>
-          <h1 className="font-bold text-md leading-tight">Disnaker Solo</h1>
+          <h1 className="font-bold text-lg leading-tight">SIPEKAT</h1>
         </div>
     </div>
   );

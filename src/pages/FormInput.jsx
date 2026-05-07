@@ -108,7 +108,7 @@ export default function FormInput({ onSubmit }) {
               </div>
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2">Menyimpan Data...</h3>
-            <p className="text-sm text-slate-500 mb-6">Mohon tunggu sebentar, data sedang dienkripsi dan dikirim ke server Disnaker Surakarta.</p>
+            <p className="text-sm text-slate-500 mb-6">Mohon tunggu sebentar, data sedang dienkripsi dan dikirim ke sistem SIPEKAT.</p>
             <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
               <div className="bg-amber-500 h-2 rounded-full w-2/3 animate-pulse"></div>
             </div>
@@ -123,7 +123,7 @@ export default function FormInput({ onSubmit }) {
               <CheckCircle size={48} />
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2">Berhasil Disimpan!</h3>
-            <p className="text-sm text-slate-500 mb-6">Terima kasih atas partisipasinya. Data Anda telah masuk dengan aman ke sistem Disnaker Surakarta.</p>
+            <p className="text-sm text-slate-500 mb-6">Terima kasih atas partisipasinya. Data Anda telah masuk dengan aman ke sistem SIPEKAT.</p>
             <button 
               onClick={() => setShowSuccessModal(false)}
               className="w-full py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition-colors"

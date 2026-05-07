@@ -17,7 +17,7 @@ export function AuthModal({
           </div>
         </div>
         <h3 className="text-xl font-bold text-slate-900 text-center mb-1">Akses Terkunci</h3>
-        <p className="text-sm text-slate-500 text-center mb-6">Masukkan password khusus admin Disnaker Surakarta untuk melihat data.</p>
+        <p className="text-sm text-slate-500 text-center mb-6">Masukkan password khusus admin SIPEKAT untuk melihat data.</p>
         
         <form onSubmit={onLogin}>
           <input 
