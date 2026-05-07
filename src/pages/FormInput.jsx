@@ -20,6 +20,18 @@ const toTitleCase = (str) => {
   return str.trim().toLowerCase().replace(/\b\w/g, s => s.toUpperCase());
 };
 
+const calculateAge = (birthDate) => {
+  if (!birthDate) return '';
+  const today = new Date();
+  const birth = new Date(birthDate);
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+  return age;
+};
+
 export default function FormInput({ onSubmit }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -30,7 +42,7 @@ export default function FormInput({ onSubmit }) {
     provinsi: 'Jawa Tengah', kabupaten: 'Surakarta', 
     kecamatan: '', kecamatanManual: '',
     kelurahan: '', kelurahanManual: '',
-    noWa: '', usia: '', jk: '',
+    noWa: '', tglLahir: '', jk: '',
     pendidikan: '', asalSekolah: '', jurusan: '', keahlian: [], keahlianLain: '', pengalaman: '',
     pelatihan: '', pelatihanLainnya: '', alasanPelatihan: '', tujuanPelatihan: '',
     statusKerja: '', lokasiKerja: '', gaji: '', industri: '', industriLainnya: '', saran: ''
@@ -78,6 +90,7 @@ export default function FormInput({ onSubmit }) {
       jurusan: toTitleCase(formData.jurusan),
       asalSekolah: toTitleCase(formData.asalSekolah),
       noWa: `'${formData.noWa}`,
+      usia: calculateAge(formData.tglLahir),
       keahlian: formData.keahlian.join(', ') + (formData.keahlianLain ? `, ${toTitleCase(formData.keahlianLain)}` : ''),
       pelatihan: formData.pelatihan === 'Lainnya' ? toTitleCase(formData.pelatihanLainnya) : formData.pelatihan,
       alasanPelatihan: toTitleCase(formData.alasanPelatihan),
@@ -128,7 +141,7 @@ export default function FormInput({ onSubmit }) {
               </div>
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2">Menyimpan Data...</h3>
-            <p className="text-sm text-slate-500 mb-6">Mohon tunggu sebentar, data sedang dienkripsi dan dikirim ke sistem SIPEKAT.</p>
+            <p className="text-sm text-slate-500 mb-6">Mohon tunggu sebentar, data sedang dienkripsi dan dikirim ke sistem SoloKerja.</p>
             <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
               <div className="bg-amber-500 h-2 rounded-full w-2/3 animate-pulse"></div>
             </div>
@@ -143,7 +156,7 @@ export default function FormInput({ onSubmit }) {
               <CheckCircle size={48} />
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2">Berhasil Disimpan!</h3>
-            <p className="text-sm text-slate-500 mb-6">Terima kasih atas partisipasinya. Data Anda telah masuk dengan aman ke sistem SIPEKAT.</p>
+            <p className="text-sm text-slate-500 mb-6">Terima kasih atas partisipasinya. Data Anda telah masuk dengan aman ke sistem SoloKerja.</p>
             <button 
               onClick={() => setShowSuccessModal(false)}
               className="w-full py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition-colors"
@@ -235,10 +248,13 @@ export default function FormInput({ onSubmit }) {
                 <label className="text-sm font-medium text-slate-700">Nomor WhatsApp <span className="text-red-500">*</span></label>
                 <input required type="text" name="noWa" value={formData.noWa} onChange={handleChange} className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none disabled:bg-slate-200" placeholder="Contoh: 0812..." />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-slate-700">Usia <span className="text-red-500">*</span></label>
-                  <input required type="number" name="usia" value={formData.usia} onChange={handleChange} className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none disabled:bg-slate-200" placeholder="Tahun" />
+                  <label className="text-sm font-medium text-slate-700">Tanggal Lahir <span className="text-red-500">*</span></label>
+                  <input required type="date" name="tglLahir" value={formData.tglLahir} onChange={handleChange} className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none disabled:bg-slate-200" />
+                  {formData.tglLahir && (
+                    <p className="text-[10px] font-bold text-amber-600 uppercase mt-1">Usia Terhitung: {calculateAge(formData.tglLahir)} Tahun</p>
+                  )}
                 </div>
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-slate-700">Jenis Kelamin <span className="text-red-500">*</span></label>

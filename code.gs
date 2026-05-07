@@ -16,6 +16,7 @@ function doPost(e) {
       data.kecamatan || "",
       data.kelurahan || "",
       data.noWa || "",
+      data.tglLahir || "",
       data.usia || "",
       data.jk || "",
       data.pendidikan || "",
