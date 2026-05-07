@@ -15,15 +15,24 @@ import { dataSekolah } from '../constants/sekolah';
 import { GOOGLE_SCRIPT_URL } from '../constants/config';
 import { SearchableSelect } from '../components/SearchableSelect';
 
+const toTitleCase = (str) => {
+  if (!str) return '';
+  return str.trim().toLowerCase().replace(/\b\w/g, s => s.toUpperCase());
+};
+
 export default function FormInput({ onSubmit }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showError, setShowError] = useState(false);
   
   const initialForm = {
-    nama: '', nik: '', kecamatan: '', kelurahan: '', noWa: '', usia: '', jk: '',
+    nama: '', nik: '', 
+    provinsi: 'Jawa Tengah', kabupaten: 'Surakarta', 
+    kecamatan: '', kecamatanManual: '',
+    kelurahan: '', kelurahanManual: '',
+    noWa: '', usia: '', jk: '',
     pendidikan: '', asalSekolah: '', jurusan: '', keahlian: [], keahlianLain: '', pengalaman: '',
-    pelatihan: '', pelatihanLainnya: '', tujuanPelatihan: '',
+    pelatihan: '', pelatihanLainnya: '', alasanPelatihan: '', tujuanPelatihan: '',
     statusKerja: '', lokasiKerja: '', gaji: '', industri: '', industriLainnya: '', saran: ''
   };
   const [formData, setFormData] = useState(initialForm);
@@ -57,12 +66,23 @@ export default function FormInput({ onSubmit }) {
     setIsSubmitting(true);
     setShowError(false);
 
+    const isLuarKota = formData.kecamatan === 'Luar Kota Surakarta';
     const dataToSubmit = {
       ...formData,
       id: Date.now(),
-      keahlian: formData.keahlian.join(', ') + (formData.keahlianLain ? `, ${formData.keahlianLain}` : ''),
-      pelatihan: formData.pelatihan === 'Lainnya' ? formData.pelatihanLainnya : formData.pelatihan,
-      industri: formData.industri === 'Lainnya' ? formData.industriLainnya : formData.industri
+      nama: toTitleCase(formData.nama),
+      provinsi: isLuarKota ? toTitleCase(formData.provinsi) : 'Jawa Tengah',
+      kabupaten: isLuarKota ? toTitleCase(formData.kabupaten) : 'Surakarta',
+      kecamatan: isLuarKota ? toTitleCase(formData.kecamatanManual) : formData.kecamatan,
+      kelurahan: isLuarKota ? toTitleCase(formData.kelurahanManual) : formData.kelurahan,
+      jurusan: toTitleCase(formData.jurusan),
+      asalSekolah: toTitleCase(formData.asalSekolah),
+      noWa: `'${formData.noWa}`,
+      keahlian: formData.keahlian.join(', ') + (formData.keahlianLain ? `, ${toTitleCase(formData.keahlianLain)}` : ''),
+      pelatihan: formData.pelatihan === 'Lainnya' ? toTitleCase(formData.pelatihanLainnya) : formData.pelatihan,
+      alasanPelatihan: toTitleCase(formData.alasanPelatihan),
+      industri: formData.industri === 'Lainnya' ? toTitleCase(formData.industriLainnya) : formData.industri,
+      pengalaman: toTitleCase(formData.pengalaman)
     };
 
     try {
@@ -177,20 +197,43 @@ export default function FormInput({ onSubmit }) {
                   {Object.keys(dataWilayah).map(kec => (
                     <option key={kec} value={kec}>{kec}</option>
                   ))}
+                  <option value="Luar Kota Surakarta">-- Luar Kota Surakarta --</option>
                 </select>
               </div>
               <div className="space-y-1">
                 <label className="text-sm font-medium text-slate-700">Kelurahan <span className="text-red-500">*</span></label>
-                <select required name="kelurahan" value={formData.kelurahan} onChange={handleChange} disabled={!formData.kecamatan || isSubmitting} className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none disabled:bg-slate-200 disabled:cursor-not-allowed">
-                  <option value="">{formData.kecamatan ? 'Pilih Kelurahan' : 'Pilih Kecamatan Dulu'}</option>
-                  {formData.kecamatan && dataWilayah[formData.kecamatan].map(kel => (
+                <select required name="kelurahan" value={formData.kelurahan} onChange={handleChange} disabled={!formData.kecamatan || formData.kecamatan === 'Luar Kota Surakarta' || isSubmitting} className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none disabled:bg-slate-200 disabled:cursor-not-allowed">
+                  <option value="">{formData.kecamatan === 'Luar Kota Surakarta' ? 'Isi Manual di Bawah' : (formData.kecamatan ? 'Pilih Kelurahan' : 'Pilih Kecamatan Dulu')}</option>
+                  {formData.kecamatan && formData.kecamatan !== 'Luar Kota Surakarta' && dataWilayah[formData.kecamatan].map(kel => (
                     <option key={kel} value={kel}>{kel}</option>
                   ))}
                 </select>
               </div>
+
+              {formData.kecamatan === 'Luar Kota Surakarta' && (
+                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-amber-50 border border-amber-100 rounded-xl animate-fadeIn">
+                  <div className="md:col-span-2 text-xs font-bold text-amber-700 uppercase tracking-wider mb-[-8px]">Detail Alamat Luar Surakarta</div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Provinsi <span className="text-red-500">*</span></label>
+                    <input required type="text" name="provinsi" value={formData.provinsi} onChange={handleChange} className="w-full p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Contoh: Jawa Timur" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Kabupaten / Kota <span className="text-red-500">*</span></label>
+                    <input required type="text" name="kabupaten" value={formData.kabupaten} onChange={handleChange} className="w-full p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Contoh: Wonogiri / Semarang" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Kecamatan (Luar Kota) <span className="text-red-500">*</span></label>
+                    <input required type="text" name="kecamatanManual" value={formData.kecamatanManual} onChange={handleChange} className="w-full p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Sebutkan Kecamatan" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-slate-700">Kelurahan (Luar Kota) <span className="text-red-500">*</span></label>
+                    <input required type="text" name="kelurahanManual" value={formData.kelurahanManual} onChange={handleChange} className="w-full p-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Sebutkan Kelurahan" />
+                  </div>
+                </div>
+              )}
               <div className="space-y-1">
                 <label className="text-sm font-medium text-slate-700">Nomor WhatsApp <span className="text-red-500">*</span></label>
-                <input required type="number" name="noWa" value={formData.noWa} onChange={handleChange} className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none disabled:bg-slate-200" placeholder="Contoh: 0812..." />
+                <input required type="text" name="noWa" value={formData.noWa} onChange={handleChange} className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none disabled:bg-slate-200" placeholder="Contoh: 0812..." />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
@@ -309,6 +352,10 @@ export default function FormInput({ onSubmit }) {
                   <option value="Hobi">Sekadar hobi/tambah ilmu</option>
                 </select>
               </div>
+            </div>
+            <div className="mt-6 space-y-1">
+              <label className="text-sm font-medium text-slate-700">Alasan Menginginkan Pelatihan Tersebut <span className="text-red-500">*</span></label>
+              <textarea required name="alasanPelatihan" value={formData.alasanPelatihan} onChange={handleChange} rows="2" className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none disabled:bg-slate-200" placeholder="Jelaskan secara singkat mengapa Anda tertarik mengikuti pelatihan ini..."></textarea>
             </div>
           </div>
 
